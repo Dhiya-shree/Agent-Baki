@@ -1,0 +1,258 @@
+.fix-item {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.fix-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e0;
+}
+
+.fix-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.fix-info {
+  flex: 1;
+}
+
+.fix-summary {
+  font-size: 1.1rem;
+  color: #2d3748;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.fix-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-badge.pending {
+  background-color: #fef5e7;
+  color: #d68910;
+}
+
+.status-badge.in-progress {
+  background-color: #ebf8ff;
+  color: #2c5282;
+}
+
+.status-badge.db-fix {
+  background-color: #faf5ff;
+  color: #6b46c1;
+}
+
+.status-badge.resolved {
+  background-color: #f0fff4;
+  color: #22543d;
+}
+
+.status-badge.ignored {
+  background-color: #f7fafc;
+  color: #718096;
+}
+
+.fix-detail {
+  background: white;
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.fix-detail strong {
+  color: #2d3748;
+  margin-right: 0.5rem;
+}
+
+.fix-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.8rem;
+}
+
+.action-btn {
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ignore-btn {
+  background-color: #718096;
+  color: white;
+}
+
+.ignore-btn:hover:not(:disabled) {
+  background-color: #4a5568;
+}
+
+.db-fix-btn {
+  background-color: #6b46c1;
+  color: white;
+}
+
+.db-fix-btn:hover:not(:disabled) {
+  background-color: #553c9a;
+}
+
+.resolved-btn {
+  background-color: #38a169;
+  color: white;
+}
+
+.resolved-btn:hover:not(:disabled) {
+  background-color: #2f855a;
+}
+
+.in-progress-btn {
+  background-color: #3182ce;
+  color: white;
+}
+
+.in-progress-btn:hover:not(:disabled) {
+  background-color: #2c5282;
+}
+
+.action-form {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-form label {
+  display: block;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.action-form input,
+.action-form textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.action-form input:focus,
+.action-form textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.action-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-error {
+  background-color: #fed7d7;
+  color: #c53030;
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border-left: 3px solid #c53030;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.submit-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background-color: #cbd5e0;
+}
+
+/* Made with Bob */

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${application.applicationName} + ' - Agent Baki'">Application Details</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2>
+                    <i class="bi bi-app"></i> 
+                    <span th:text="${application.applicationName}">Application Name</span>
+                </h2>
+                <p class="text-muted" th:if="${application.repositoryLink}">
+                    <i class="bi bi-folder"></i> 
+                    <span th:text="${application.repositoryLink}">Repository Path</span>
+                </p>
+            </div>
+            <div>
+                <a href="/" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+                <button type="button" class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteAppModal">
+                    <i class="bi bi-trash"></i> Delete Application
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-number" th:text="${application.fixes.size()}">0</div>
+                    <div class="stats-label">Total Fixes</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-number text-warning" th:text="${pendingFixes != null ? pendingFixes.size() : 0}">0</div>
+                    <div class="stats-label">Pending</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-number text-info" th:text="${inProgressFixes != null ? inProgressFixes.size() : 0}">0</div>
+                    <div class="stats-label">In Progress</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-number text-success" th:text="${resolvedFixes != null ? resolvedFixes.size() : 0}">0</div>
+                    <div class="stats-label">Resolved</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-number text-danger" th:text="${ignoredFixes != null ? ignoredFixes.size() : 0}">0</div>
+                    <div class="stats-label">Ignored</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-number text-dark" th:text="${dbFixes != null ? dbFixes.size() : 0}">0</div>
+                    <div class="stats-label">DB Fix</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Fixes -->
+        <div class="card mb-4" th:if="${pendingFixes != null and !pendingFixes.isEmpty()}">
+            <div class="card-header bg-warning bg-opacity-10">
+                <h5 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Pending Fixes
+                    <span class="badge bg-warning ms-2" th:text="${pendingFixes.size()}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Issue Summary</th>
+                                <th>Code Location</th>
+                                <th class="text-center">Incidents</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="fix : ${pendingFixes}">
+                                <td>
+                                    <strong th:text="${fix.issueSummary}">Issue Summary</strong>
+                                </td>
+                                <td>
+                                    <div class="code-location">
+                                        <i class="bi bi-code-slash"></i>
+                                        <span th:text="${fix.codeClassName}">ClassName</span>:<span th:text="${fix.codeLine}">123</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary" th:text="${fix.mails.size() + fix.jiras.size()}">0</span>
+                                </td>
+                                <td>
+                                    <small th:text="${#temporals.format(fix.createdAt, 'MMM dd, yyyy HH:mm')}">Date</small>
+                                </td>
+                                <td>
+                                    <a th:href="@{/fix/{id}(id=${fix.fixId})}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- In Progress Fixes -->
+        <div class="card mb-4" th:if="${inProgressFixes != null and !inProgressFixes.isEmpty()}">
+            <div class="card-header bg-info bg-opacity-10">
+                <h5 class="mb-0">
+                    <i class="bi bi-gear"></i> In Progress Fixes
+                    <span class="badge bg-info ms-2" th:text="${inProgressFixes.size()}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Issue Summary</th>
+                                <th>Code Location</th>
+                                <th>GitHub PR</th>
+                                <th class="text-center">Incidents</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="fix : ${inProgressFixes}">
+                                <td>
+                                    <strong th:text="${fix.issueSummary}">Issue Summary</strong>
+                                </td>
+                                <td>
+                                    <div class="code-location">
+                                        <i class="bi bi-code-slash"></i>
+                                        <span th:text="${fix.codeClassName}">ClassName</span>:<span th:text="${fix.codeLine}">123</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a th:if="${fix.githubPr}" th:href="${fix.githubPr}" target="_blank" class="text-decoration-none">
+                                        <i class="bi bi-github"></i> <span th:text="${fix.githubPr}">PR Link</span>
+                                    </a>
+                                    <span th:unless="${fix.githubPr}" class="text-muted">-</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary" th:text="${fix.mails.size() + fix.jiras.size()}">0</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/fix/{id}(id=${fix.fixId})}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resolved Fixes -->
+        <div class="card mb-4" th:if="${resolvedFixes != null and !resolvedFixes.isEmpty()}">
+            <div class="card-header bg-success bg-opacity-10">
+                <h5 class="mb-0">
+                    <i class="bi bi-check-circle"></i> Resolved Fixes
+                    <span class="badge bg-success ms-2" th:text="${resolvedFixes.size()}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Issue Summary</th>
+                                <th>Code Location</th>
+                                <th>GitHub PR</th>
+                                <th class="text-center">Incidents</th>
+                                <th>Resolved</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="fix : ${resolvedFixes}">
+                                <td>
+                                    <strong th:text="${fix.issueSummary}">Issue Summary</strong>
+                                </td>
+                                <td>
+                                    <div class="code-location">
+                                        <i class="bi bi-code-slash"></i>
+                                        <span th:text="${fix.codeClassName}">ClassName</span>:<span th:text="${fix.codeLine}">123</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a th:if="${fix.githubPr}" th:href="${fix.githubPr}" target="_blank" class="text-decoration-none">
+                                        <i class="bi bi-github"></i> <span th:text="${fix.githubPr}">PR Link</span>
+                                    </a>
+                                    <span th:unless="${fix.githubPr}" class="text-muted">-</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary" th:text="${fix.mails.size() + fix.jiras.size()}">0</span>
+                                </td>
+                                <td>
+                                    <small th:text="${#temporals.format(fix.updatedAt, 'MMM dd, yyyy HH:mm')}">Date</small>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ignored Fixes -->
+        <div class="card mb-4" th:if="${ignoredFixes != null and !ignoredFixes.isEmpty()}">
+            <div class="card-header bg-danger bg-opacity-10">
+                <h5 class="mb-0">
+                    <i class="bi bi-x-circle"></i> Ignored Fixes
+                    <span class="badge bg-danger ms-2" th:text="${ignoredFixes.size()}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Issue Summary</th>
+                                <th>Code Location</th>
+                                <th>Reason</th>
+                                <th class="text-center">Incidents</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="fix : ${ignoredFixes}">
+                                <td>
+                                    <strong th:text="${fix.issueSummary}">Issue Summary</strong>
+                                </td>
+                                <td>
+                                    <div class="code-location">
+                                        <i class="bi bi-code-slash"></i>
+                                        <span th:text="${fix.codeClassName}">ClassName</span>:<span th:text="${fix.codeLine}">123</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span th:text="${fix.reason}">Reason</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary" th:text="${fix.mails.size() + fix.jiras.size()}">0</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB Fixes -->
+        <div class="card mb-4" th:if="${dbFixes != null and !dbFixes.isEmpty()}">
+            <div class="card-header bg-dark bg-opacity-10">
+                <h5 class="mb-0">
+                    <i class="bi bi-database"></i> Database Fixes
+                    <span class="badge bg-dark ms-2" th:text="${dbFixes.size()}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Issue Summary</th>
+                                <th>Code Location</th>
+                                <th>Change Number</th>
+                                <th class="text-center">Incidents</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="fix : ${dbFixes}">
+                                <td>
+                                    <strong th:text="${fix.issueSummary}">Issue Summary</strong>
+                                </td>
+                                <td>
+                                    <div class="code-location">
+                                        <i class="bi bi-code-slash"></i>
+                                        <span th:text="${fix.codeClassName}">ClassName</span>:<span th:text="${fix.codeLine}">123</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span th:text="${fix.changeNumber}">CHG-123</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary" th:text="${fix.mails.size() + fix.jiras.size()}">0</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${application.fixes.isEmpty()}" class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #dee2e6;"></i>
+                <h4 class="mt-3 text-muted">No Fixes Found</h4>
+                <p class="text-muted">Fixes will appear here once incidents are analyzed</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- Made with Bob -->
+        
+        <!-- Delete Application Modal -->
+        <div class="modal fade" id="deleteAppModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/application/{id}/delete(id=${application.applicationId})}" method="post">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">
+                                <i class="bi bi-exclamation-triangle"></i> Delete Application
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <strong>Warning:</strong> This action cannot be undone!
+                            </div>
+                            <p>Are you sure you want to delete the application <strong th:text="${application.applicationName}">App Name</strong>?</p>
+                            <p class="text-muted">This will permanently delete:</p>
+                            <ul class="text-muted">
+                                <li><span th:text="${application.fixes.size()}">0</span> fixes</li>
+                                <li><span th:text="${application.mails.size()}">0</span> email incidents</li>
+                                <li><span th:text="${application.jiras.size()}">0</span> Jira incidents</li>
+                                <li>All associated log files</li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete Application
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>

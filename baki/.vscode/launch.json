@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BakiApplication<agent-baki>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.agent.baki.BakiApplication",
+            "projectName": "agent-baki",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
